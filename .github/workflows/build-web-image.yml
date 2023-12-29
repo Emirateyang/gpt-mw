@@ -22,14 +22,14 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USER }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: langgenius/dify-web
+        images: Emirateyang/dify-web
         tags: |
           type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/') }}
           type=ref,event=branch
@@ -44,17 +44,17 @@ jobs:
         build-args: |
           COMMIT_SHA=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: krinsiman/dify-web:${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-    - name: Deploy to server
-      if: github.ref == 'refs/heads/deploy/dev'
-      uses: appleboy/ssh-action@v0.1.8
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          ${{ secrets.SSH_SCRIPT }}
+#    - name: Deploy to server
+#      if: github.ref == 'refs/heads/deploy/dev'
+#      uses: appleboy/ssh-action@v0.1.8
+#      with:
+#        host: ${{ secrets.SSH_HOST }}
+#        username: ${{ secrets.SSH_USER }}
+#        key: ${{ secrets.SSH_PRIVATE_KEY }}
+#        script: |
+#          ${{ secrets.SSH_SCRIPT }}
