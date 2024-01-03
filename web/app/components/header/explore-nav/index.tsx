@@ -19,18 +19,19 @@ const ExploreNav = ({
   const actived = selectedSegment === 'explore'
 
   return (
-    <Link href="/explore/apps" className={classNames(
-      className, 'group',
-      actived && 'bg-white shadow-md',
-      actived ? 'text-primary-600' : 'text-gray-500 hover:bg-gray-200',
-    )}>
-      {
-        actived
-          ? <Grid01Solid className='mr-2 w-4 h-4' />
-          : <Grid01 className='mr-2 w-4 h-4' />
-      }
-      {t('common.menus.explore')}
-    </Link>
+    // <Link href="/explore/apps" className={classNames(
+    //   className, 'group',
+    //   actived && 'bg-white shadow-md',
+    //   actived ? 'text-primary-600' : 'text-gray-500 hover:bg-gray-200',
+    // )}>
+    //   {
+    //     actived
+    //       ? <Grid01Solid className='mr-2 w-4 h-4' />
+    //       : <Grid01 className='mr-2 w-4 h-4' />
+    //   }
+    //   {t('common.menus.explore')}
+    // </Link>
+    <></>
   )
 }
 
