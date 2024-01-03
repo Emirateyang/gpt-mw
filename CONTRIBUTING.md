@@ -3,11 +3,11 @@
 Thanks for your interest in [Dify](https://dify.ai) and for wanting to contribute! Before you begin, read the
 [code of conduct](https://github.com/langgenius/.github/blob/main/CODE_OF_CONDUCT.md) and check out the
 [existing issues](https://github.com/langgenius/langgenius-gateway/issues).
-This document describes how to set up your development environment to build and test [Dify](https://dify.ai).
+This document describes how to set up your development environment to build and test .
 
 ### Install dependencies
 
-You need to install and configure the following dependencies on your machine to build [Dify](https://dify.ai):
+You need to install and configure the following dependencies on your machine to build :
 
 - [Git](http://git-scm.com/)
 - [Docker](https://www.docker.com/)
