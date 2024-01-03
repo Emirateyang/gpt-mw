@@ -64,7 +64,7 @@ function AppCard({
     const operationsMap = {
       webapp: [
         { opName: t('appOverview.overview.appInfo.preview'), opIcon: RocketLaunchIcon },
-        { opName: t('appOverview.overview.appInfo.customize.entry'), opIcon: PaintBrushIcon },
+        // { opName: t('appOverview.overview.appInfo.customize.entry'), opIcon: PaintBrushIcon },
       ] as { opName: string; opIcon: any }[],
       api: [{ opName: t('appOverview.overview.apiInfo.doc'), opIcon: DocumentTextIcon }],
       app: [],
@@ -97,10 +97,10 @@ function AppCard({
         return () => {
           window.open(appUrl, '_blank')
         }
-      case t('appOverview.overview.appInfo.customize.entry'):
-        return () => {
-          setShowCustomizeModal(true)
-        }
+      // case t('appOverview.overview.appInfo.customize.entry'):
+      //   return () => {
+      //     setShowCustomizeModal(true)
+      //   }
       case t('appOverview.overview.appInfo.settings.entry'):
         return () => {
           setShowSettingsModal(true)
@@ -242,14 +242,14 @@ function AppCard({
               appBaseUrl={app_base_url}
               accessToken={access_token}
             />
-            <CustomizeModal
-              isShow={showCustomizeModal}
-              linkUrl=""
-              onClose={() => setShowCustomizeModal(false)}
-              appId={appInfo.id}
-              api_base_url={appInfo.api_base_url}
-              mode={appInfo.mode}
-            />
+            {/*<CustomizeModal*/}
+            {/*  isShow={showCustomizeModal}*/}
+            {/*  linkUrl=""*/}
+            {/*  onClose={() => setShowCustomizeModal(false)}*/}
+            {/*  appId={appInfo.id}*/}
+            {/*  api_base_url={appInfo.api_base_url}*/}
+            {/*  mode={appInfo.mode}*/}
+            {/*/>*/}
           </>
         )
         : null}
