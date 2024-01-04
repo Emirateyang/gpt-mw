@@ -141,7 +141,7 @@ const NormalForm = () => {
     <>
       <div className="w-full mx-auto">
         <h2 className="text-[32px] font-bold text-gray-900">{t('login.pageTitle')}</h2>
-        <p className='mt-1 text-sm text-gray-600'>{t('login.welcome')}</p>
+        {/*<p className='mt-1 text-sm text-gray-600'>{t('login.welcome')}</p>*/}
       </div>
 
       <div className="w-full mx-auto mt-8">
@@ -276,21 +276,21 @@ const NormalForm = () => {
             </>
           }
           {/*  agree to our Terms and Privacy Policy. */}
-          <div className="w-hull text-center block mt-2 text-xs text-gray-600">
-            {t('login.tosDesc')}
-            &nbsp;
-            <Link
-              className='text-primary-600'
-              target={'_blank'}
-              href={locale === 'en' ? 'https://docs.dify.ai/user-agreement/terms-of-service' : 'https://docs.dify.ai/v/zh-hans/user-agreement/terms-of-service'}
-            >{t('login.tos')}</Link>
-            &nbsp;&&nbsp;
-            <Link
-              className='text-primary-600'
-              target={'_blank'}
-              href={locale === 'en' ? 'https://docs.dify.ai/user-agreement/privacy-policy' : 'https://docs.dify.ai/v/zh-hans/user-agreement/privacy-policy'}
-            >{t('login.pp')}</Link>
-          </div>
+          {/*<div className="w-hull text-center block mt-2 text-xs text-gray-600">*/}
+          {/*  {t('login.tosDesc')}*/}
+          {/*  &nbsp;*/}
+          {/*  <Link*/}
+          {/*    className='text-primary-600'*/}
+          {/*    target={'_blank'}*/}
+          {/*    href={locale === 'en' ? 'https://docs.dify.ai/user-agreement/terms-of-service' : 'https://docs.dify.ai/v/zh-hans/user-agreement/terms-of-service'}*/}
+          {/*  >{t('login.tos')}</Link>*/}
+          {/*  &nbsp;&&nbsp;*/}
+          {/*  <Link*/}
+          {/*    className='text-primary-600'*/}
+          {/*    target={'_blank'}*/}
+          {/*    href={locale === 'en' ? 'https://docs.dify.ai/user-agreement/privacy-policy' : 'https://docs.dify.ai/v/zh-hans/user-agreement/privacy-policy'}*/}
+          {/*  >{t('login.pp')}</Link>*/}
+          {/*</div>*/}
 
         </div>
       </div>
