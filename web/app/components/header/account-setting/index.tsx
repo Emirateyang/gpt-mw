@@ -81,12 +81,12 @@ export default function AccountSetting({
         icon: <GoldCoinOutLine className={iconClassName} />,
         activeIcon: <GoldCoin className={iconClassName} />,
       },
-      {
-        key: 'data-source',
-        name: t('common.settings.dataSource'),
-        icon: <Database03 className={iconClassName} />,
-        activeIcon: <Database03Solid className={iconClassName} />,
-      },
+      // {
+      //   key: 'data-source',
+      //   name: t('common.settings.dataSource'),
+      //   icon: <Database03 className={iconClassName} />,
+      //   activeIcon: <Database03Solid className={iconClassName} />,
+      // },
       {
         key: 'plugin',
         name: t('common.settings.plugin'),
