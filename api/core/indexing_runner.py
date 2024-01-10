@@ -5,12 +5,12 @@ import re
 import threading
 import time
 import uuid
-from typing import Optional, List, cast
+from typing import Optional, List, cast, Type, Union, Literal, AbstractSet, Collection, Any
 
 from flask import current_app, Flask
 from flask_login import current_user
 from langchain.schema import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter, TextSplitter
+from langchain.text_splitter import TextSplitter, TS, TokenTextSplitter
 from sqlalchemy.orm.exc import ObjectDeletedError
 
 from core.data_loader.file_extractor import FileExtractor
@@ -23,7 +23,8 @@ from core.errors.error import ProviderTokenNotInitError
 from core.model_runtime.entities.model_entities import ModelType, PriceType
 from core.model_runtime.model_providers.__base.large_language_model import LargeLanguageModel
 from core.model_runtime.model_providers.__base.text_embedding_model import TextEmbeddingModel
-from core.spiltter.fixed_text_splitter import FixedRecursiveCharacterTextSplitter
+from core.model_runtime.model_providers.__base.tokenizers.gpt2_tokenzier import GPT2Tokenizer
+from core.spiltter.fixed_text_splitter import FixedRecursiveCharacterTextSplitter, EnhanceRecursiveCharacterTextSplitter
 from extensions.ext_database import db
 from extensions.ext_redis import redis_client
 from extensions.ext_storage import storage
@@ -58,7 +59,7 @@ class IndexingRunner:
                     first()
 
                 # load file
-                text_docs = self._load_data(dataset_document)
+                text_docs = self._load_data(dataset_document, processing_rule.mode == 'automatic')
 
                 # get splitter
                 splitter = self._get_splitter(processing_rule)
@@ -112,14 +113,13 @@ class IndexingRunner:
             for document_segment in document_segments:
                 db.session.delete(document_segment)
             db.session.commit()
-
-            # load file
-            text_docs = self._load_data(dataset_document)
-
             # get the process rule
             processing_rule = db.session.query(DatasetProcessRule). \
                 filter(DatasetProcessRule.id == dataset_document.dataset_process_rule_id). \
                 first()
+
+            # load file
+            text_docs = self._load_data(dataset_document, processing_rule.mode == 'automatic')
 
             # get splitter
             splitter = self._get_splitter(processing_rule)
@@ -237,13 +237,14 @@ class IndexingRunner:
         preview_texts = []
         total_segments = 0
         for file_detail in file_details:
-            # load data from file
-            text_docs = FileExtractor.load(file_detail)
 
             processing_rule = DatasetProcessRule(
                 mode=tmp_processing_rule["mode"],
                 rules=json.dumps(tmp_processing_rule["rules"])
             )
+
+            # load data from file
+            text_docs = FileExtractor.load(file_detail, is_automatic=processing_rule.mode == 'automatic')
 
             # get splitter
             splitter = self._get_splitter(processing_rule)
@@ -381,13 +382,15 @@ class IndexingRunner:
                 )
                 total_segments += len(documents)
 
-                embedding_model_type_instance = embedding_model_instance.model_type_instance
-                embedding_model_type_instance = cast(TextEmbeddingModel, embedding_model_type_instance)
+                embedding_model_type_instance = None
+                if embedding_model_instance:
+                    embedding_model_type_instance = embedding_model_instance.model_type_instance
+                    embedding_model_type_instance = cast(TextEmbeddingModel, embedding_model_type_instance)
 
                 for document in documents:
                     if len(preview_texts) < 5:
                         preview_texts.append(document.page_content)
-                    if indexing_technique == 'high_quality' or embedding_model_instance:
+                    if indexing_technique == 'high_quality' and embedding_model_type_instance:
                         tokens += embedding_model_type_instance.get_num_tokens(
                             model=embedding_model_instance.model,
                             credentials=embedding_model_instance.credentials,
@@ -456,7 +459,7 @@ class IndexingRunner:
                 one_or_none()
 
             if file_detail:
-                text_docs = FileExtractor.load(file_detail, is_automatic=True)
+                text_docs = FileExtractor.load(file_detail, is_automatic=automatic)
         elif dataset_document.data_source_type == 'notion_import':
             loader = NotionLoader.from_document(dataset_document)
             text_docs = loader.load()
@@ -502,7 +505,8 @@ class IndexingRunner:
             if separator:
                 separator = separator.replace('\\n', '\n')
 
-            character_splitter = FixedRecursiveCharacterTextSplitter.from_tiktoken_encoder(
+
+            character_splitter = FixedRecursiveCharacterTextSplitter.from_gpt2_encoder(
                 chunk_size=segmentation["max_tokens"],
                 chunk_overlap=0,
                 fixed_separator=separator,
@@ -510,7 +514,7 @@ class IndexingRunner:
             )
         else:
             # Automatic segmentation
-            character_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+            character_splitter = EnhanceRecursiveCharacterTextSplitter.from_gpt2_encoder(
                 chunk_size=DatasetProcessRule.AUTOMATIC_RULES['segmentation']['max_tokens'],
                 chunk_overlap=0,
                 separators=["\n\n", "。", ".", " ", ""]

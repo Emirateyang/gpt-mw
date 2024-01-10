@@ -132,8 +132,8 @@ class LargeLanguageModel(AIModel):
         system_fingerprint = None
         real_model = model
 
-        for chunk in result:
-            try:
+        try:
+            for chunk in result:
                 yield chunk
 
                 self._trigger_new_chunk_callbacks(
@@ -156,8 +156,8 @@ class LargeLanguageModel(AIModel):
 
                 if chunk.system_fingerprint:
                     system_fingerprint = chunk.system_fingerprint
-            except Exception as e:
-                raise self._transform_invoke_error(e)
+        except Exception as e:
+            raise self._transform_invoke_error(e)
 
         self._trigger_after_invoke_callbacks(
             model=model,
@@ -165,7 +165,7 @@ class LargeLanguageModel(AIModel):
                 model=real_model,
                 prompt_messages=prompt_messages,
                 message=prompt_message,
-                usage=usage,
+                usage=usage if usage else LLMUsage.empty_usage(),
                 system_fingerprint=system_fingerprint
             ),
             credentials=credentials,

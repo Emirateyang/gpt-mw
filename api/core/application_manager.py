@@ -23,7 +23,7 @@ from core.model_runtime.errors.invoke import InvokeAuthorizationError, InvokeErr
 from core.model_runtime.model_providers.__base.large_language_model import LargeLanguageModel
 from core.prompt.prompt_template import PromptTemplateParser
 from core.provider_manager import ProviderManager
-from core.application_queue_manager import ApplicationQueueManager, ConversationTaskStoppedException
+from core.application_queue_manager import ApplicationQueueManager, ConversationTaskStoppedException, PublishFrom
 from extensions.ext_database import db
 from models.account import Account
 from models.model import EndUser, Conversation, Message, MessageFile, App
@@ -169,15 +169,18 @@ class ApplicationManager:
             except ConversationTaskStoppedException:
                 pass
             except InvokeAuthorizationError:
-                queue_manager.publish_error(InvokeAuthorizationError('Incorrect API key provided'))
+                queue_manager.publish_error(
+                    InvokeAuthorizationError('Incorrect API key provided'),
+                    PublishFrom.APPLICATION_MANAGER
+                )
             except ValidationError as e:
                 logger.exception("Validation Error when generating")
-                queue_manager.publish_error(e)
+                queue_manager.publish_error(e, PublishFrom.APPLICATION_MANAGER)
             except (ValueError, InvokeError) as e:
-                queue_manager.publish_error(e)
+                queue_manager.publish_error(e, PublishFrom.APPLICATION_MANAGER)
             except Exception as e:
                 logger.exception("Unknown Error when generating")
-                queue_manager.publish_error(e)
+                queue_manager.publish_error(e, PublishFrom.APPLICATION_MANAGER)
             finally:
                 db.session.remove()
 
@@ -473,7 +476,7 @@ class ApplicationManager:
         more_like_this_dict = copy_app_model_config_dict.get('more_like_this')
         if more_like_this_dict:
             if 'enabled' in more_like_this_dict and more_like_this_dict['enabled']:
-                properties['more_like_this'] = copy_app_model_config_dict.get('opening_statement')
+                properties['more_like_this'] = True
 
         # speech to text
         speech_to_text_dict = copy_app_model_config_dict.get('speech_to_text')

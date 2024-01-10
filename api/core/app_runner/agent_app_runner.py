@@ -75,7 +75,7 @@ class AgentApplicationRunner(AppRunner):
         # reorganize all inputs and template to prompt messages
         # Include: prompt template, inputs, query(optional), files(optional)
         #          memory(optional)
-        prompt_messages, stop = self.originze_prompt_messages(
+        prompt_messages, stop = self.organize_prompt_messages(
             app_record=app_record,
             model_config=app_orchestration_config.model_config,
             prompt_template_entity=app_orchestration_config.prompt_template,
@@ -153,7 +153,7 @@ class AgentApplicationRunner(AppRunner):
             # reorganize all inputs and template to prompt messages
             # Include: prompt template, inputs, query(optional), files(optional)
             #          memory(optional), external data, dataset context(optional)
-            prompt_messages, stop = self.originze_prompt_messages(
+            prompt_messages, stop = self.organize_prompt_messages(
                 app_record=app_record,
                 model_config=app_orchestration_config.model_config,
                 prompt_template_entity=app_orchestration_config.prompt_template,
@@ -237,8 +237,8 @@ class AgentApplicationRunner(AppRunner):
         all_message_tokens = 0
         all_answer_tokens = 0
         for agent_thought in agent_thoughts:
-            all_message_tokens += agent_thought.message_tokens
-            all_answer_tokens += agent_thought.answer_tokens
+            all_message_tokens += agent_thought.message_token
+            all_answer_tokens += agent_thought.answer_token
 
         model_type_instance = model_config.provider_model_bundle.model_type_instance
         model_type_instance = cast(LargeLanguageModel, model_type_instance)

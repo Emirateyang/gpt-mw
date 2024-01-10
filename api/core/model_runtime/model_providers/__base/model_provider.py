@@ -47,7 +47,7 @@ class ModelProvider(ABC):
         yaml_path = os.path.join(current_path, f'{provider_name}.yaml')
         yaml_data = {}
         if os.path.exists(yaml_path):
-            with open(yaml_path, 'r') as f:
+            with open(yaml_path, 'r', encoding='utf-8') as f:
                 yaml_data = yaml.safe_load(f)
 
         try:
@@ -112,7 +112,7 @@ class ModelProvider(ABC):
         model_class = None
         for name, obj in vars(mod).items():
             if (isinstance(obj, type) and issubclass(obj, AIModel) and not obj.__abstractmethods__
-                    and obj != AIModel):
+                    and obj != AIModel and obj.__module__ == mod.__name__):
                 model_class = obj
                 break
 

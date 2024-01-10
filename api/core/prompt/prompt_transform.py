@@ -207,7 +207,7 @@ class PromptTransform:
 
         json_file_path = os.path.join(prompt_path, f'{prompt_name}.json')
         # Open the JSON file and read its content
-        with open(json_file_path, 'r') as json_file:
+        with open(json_file_path, 'r', encoding='utf-8') as json_file:
             return json.load(json_file)
 
     def _get_simple_chat_app_chat_model_prompt_messages(self, prompt_rules: dict,
@@ -334,7 +334,18 @@ class PromptTransform:
 
         prompt = re.sub(r'<\|.*?\|>', '', prompt)
 
-        return [UserPromptMessage(content=prompt)]
+        model_mode = ModelMode.value_of(model_config.mode)
+
+        if model_mode == ModelMode.CHAT and files:
+            prompt_message_contents = [TextPromptMessageContent(data=prompt)]
+            for file in files:
+                prompt_message_contents.append(file.prompt_message_content)
+
+            prompt_message = UserPromptMessage(content=prompt_message_contents)
+        else:
+            prompt_message = UserPromptMessage(content=prompt)
+
+        return [prompt_message]
 
     def _set_context_variable(self, context: str, prompt_template: PromptTemplateParser, prompt_inputs: dict) -> None:
         if '#context#' in prompt_template.variable_keys:

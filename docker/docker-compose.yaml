@@ -2,7 +2,7 @@ version: '3.1'
 services:
   # API service
   api:
-    image: langgenius/dify-api:0.4.0
+    image: langgenius/dify-api:0.4.4
     restart: always
     environment:
       # Startup mode, 'api' starts the API server.
@@ -92,6 +92,8 @@ services:
       QDRANT_URL: http://qdrant:6333
       # The Qdrant API key.
       QDRANT_API_KEY: difyai123456
+      # The Qdrant clinet timeout setting.
+      QDRANT_CLIENT_TIMEOUT: 20
       # Milvus configuration Only available when VECTOR_STORE is `milvus`.
       # The milvus host.
       MILVUS_HOST: 127.0.0.1
@@ -128,7 +130,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: langgenius/dify-api:0.4.0
+    image: langgenius/dify-api:0.4.4
     restart: always
     environment:
       # Startup mode, 'worker' starts the Celery worker for processing the queue.
@@ -170,6 +172,8 @@ services:
       QDRANT_URL: http://qdrant:6333
       # The Qdrant API key.
       QDRANT_API_KEY: difyai123456
+      # The Qdrant clinet timeout setting.
+      QDRANT_CLIENT_TIMEOUT: 20
       # Milvus configuration Only available when VECTOR_STORE is `milvus`.
       # The milvus host.
       MILVUS_HOST: 127.0.0.1
@@ -196,7 +200,7 @@ services:
 
   # Frontend web application.
   web:
-    image: langgenius/dify-web:0.4.0
+    image: langgenius/dify-web:0.4.4
     restart: always
     environment:
       EDITION: SELF_HOSTED
@@ -232,7 +236,7 @@ services:
     # ports:
     #   - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: [ "CMD", "pg_isready" ]
       interval: 1s
       timeout: 3s
       retries: 30
@@ -247,7 +251,7 @@ services:
     # Set the redis password when startup redis server.
     command: redis-server --requirepass difyai123456
     healthcheck:
-      test: ["CMD", "redis-cli","ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
     # uncomment to expose redis port to host
     # ports:
     #   - "6379:6379"
