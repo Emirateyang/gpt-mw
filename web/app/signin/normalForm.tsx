@@ -8,11 +8,11 @@ import Link from 'next/link'
 import { useContext } from 'use-context-selector'
 import Toast from '../components/base/toast'
 import style from './page.module.css'
-// import Tooltip from '@/app/components/base/tooltip/index'
 import { IS_CE_EDITION, apiPrefix } from '@/config'
 import Button from '@/app/components/base/button'
 import { login, oauth } from '@/service/common'
 import I18n from '@/context/i18n'
+import { LanguagesSupportedUnderscore, getModelRuntimeSupported } from '@/utils/language'
 
 const validEmailReg = /^[\w\.-]+@([\w-]+\.)+[\w-]{2,}$/
 
@@ -67,6 +67,7 @@ const NormalForm = () => {
   const { t } = useTranslation()
   const router = useRouter()
   const { locale } = useContext(I18n)
+  const language = getModelRuntimeSupported(locale)
 
   const [state, dispatch] = useReducer(reducer, {
     formValid: false,
