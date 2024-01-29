@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useContext } from 'use-context-selector'
 import I18n from '@/context/i18n'
 import { X } from '@/app/components/base/icons/src/vender/line/general'
+<<<<<<< HEAD
 
 const NOTICE_I18N = {
   title: {
@@ -13,10 +14,18 @@ const NOTICE_I18N = {
     'zh-Hans': '为了有效提升数据检索能力及稳定性，Dify 将于 2023 年 8 月 29 日 03:00 至 08:00 期间进行服务升级，届时 AI 云端版及应用将无法访问。感谢您的耐心与支持。',
   },
 }
+=======
+import { NOTICE_I18N, getModelRuntimeSupported } from '@/utils/language'
+>>>>>>> upstream/main
 
 const MaintenanceNotice = () => {
   const { locale } = useContext(I18n)
+  const language = getModelRuntimeSupported(locale)
+
   const [showNotice, setShowNotice] = useState(localStorage.getItem('hide-maintenance-notice') !== '1')
+  const handleJumpNotice = () => {
+    window.open(NOTICE_I18N.href, '_blank')
+  }
 
   const handleCloseNotice = () => {
     localStorage.setItem('hide-maintenance-notice', '1')
@@ -31,8 +40,12 @@ const MaintenanceNotice = () => {
 
   return (
     <div className='shrink-0 flex items-center px-4 h-[38px] bg-[#FFFAEB] border-b border-[0.5px] border-b-[#FEF0C7] z-20'>
-      <div className='shrink-0 flex items-center mr-2 px-2 h-[22px] bg-[#F79009] text-white text-[11px] font-medium rounded-xl'>{titleByLocale[locale]}</div>
-      <div className='grow text-xs font-medium text-gray-700'>{descByLocale[locale]}</div>
+      <div className='shrink-0 flex items-center mr-2 px-2 h-[22px] bg-[#F79009] text-white text-[11px] font-medium rounded-xl'>{titleByLocale[language]}</div>
+      {
+        (NOTICE_I18N.href && NOTICE_I18N.href !== '#')
+          ? <div className='grow text-xs font-medium text-gray-700 cursor-pointer' onClick={handleJumpNotice}>{descByLocale[language]}</div>
+          : <div className='grow text-xs font-medium text-gray-700'>{descByLocale[language]}</div>
+      }
       <X className='shrink-0 w-4 h-4 text-gray-500 cursor-pointer' onClick={handleCloseNotice} />
     </div>
   )
