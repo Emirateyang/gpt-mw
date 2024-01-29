@@ -36,8 +36,6 @@ const translation = {
     Programming: 'Programming',
     HR: 'HR',
   },
-<<<<<<< HEAD
-<<<<<<< HEAD
   universalChat: {
     welcome: 'Start chat with AI',
     welcomeDescribe: 'Your AI conversation companion for personalized assistance',
@@ -77,10 +75,6 @@ const translation = {
     },
     viewConfigDetailTip: 'In conversation, cannot change above settings',
   },
-=======
->>>>>>> upstream/main
-=======
->>>>>>> upstream/main
 }
 
 export default translation

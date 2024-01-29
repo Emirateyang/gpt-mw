@@ -147,7 +147,6 @@ const ExtraInfo = ({ isMobile, relatedApps }: IExtraInfoProps) => {
             </div>
           </div>
           <div className='text-xs text-gray-500 mt-2'>{t('common.datasetMenus.emptyTip')}</div>
-<<<<<<< HEAD
           {/*<a*/}
           {/*  className='inline-flex items-center text-xs text-primary-600 mt-2 cursor-pointer'*/}
           {/*  href={`https://docs.dify.ai/${locale === 'zh-Hans' ? 'v/zh-hans' : ''}/application/prompt-engineering`}*/}
@@ -156,20 +155,6 @@ const ExtraInfo = ({ isMobile, relatedApps }: IExtraInfoProps) => {
           {/*  <BookOpenIcon className='mr-1' />*/}
           {/*  {t('common.datasetMenus.viewDoc')}*/}
           {/*</a>*/}
-=======
-          <a
-            className='inline-flex items-center text-xs text-primary-600 mt-2 cursor-pointer'
-            href={
-              language === LanguagesSupported[1]
-                ? 'https://docs.dify.ai/v/zh-hans/guides/application-design/prompt-engineering'
-                : 'https://docs.dify.ai/user-guide/creating-dify-apps/prompt-engineering'
-            }
-            target='_blank'
-          >
-            <BookOpenIcon className='mr-1' />
-            {t('common.datasetMenus.viewDoc')}
-          </a>
->>>>>>> upstream/main
         </div>
       </FloatPopoverContainer>
     )}

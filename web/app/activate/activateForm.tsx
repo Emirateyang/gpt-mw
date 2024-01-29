@@ -201,7 +201,6 @@ const ActivateForm = () => {
                   {`${t('login.join')} ${checkRes.workspace_name}`}
                 </Button>
               </div>
-<<<<<<< HEAD
               {/*<div className="block w-hull mt-2 text-xs text-gray-600">*/}
               {/*  {t('login.license.tip')}*/}
               {/*  &nbsp;*/}
@@ -211,17 +210,6 @@ const ActivateForm = () => {
               {/*    href={`https://docs.dify.ai/${locale === 'en' ? '' : `v/${locale.toLowerCase()}`}/community/open-source`}*/}
               {/*  >{t('login.license.link')}</Link>*/}
               {/*</div>*/}
-=======
-              <div className="block w-hull mt-2 text-xs text-gray-600">
-                {t('login.license.tip')}
-                &nbsp;
-                <Link
-                  className='text-primary-600'
-                  target={'_blank'}
-                  href={`https://docs.dify.ai/${language !== LanguagesSupportedUnderscore[1] ? 'user-agreement' : `v/${locale.toLowerCase()}/policies`}/open-source`}
-                >{t('login.license.link')}</Link>
-              </div>
->>>>>>> upstream/main
             </div>
           </div>
         </div>
