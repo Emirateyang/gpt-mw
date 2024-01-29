@@ -72,6 +72,9 @@ const translation = {
 =======
     ragAPIRequestTooltip: '指单独调用 Dify 知识库数据处理能力的 API。',
     receiptInfo: '只有团队所有者和团队管理员才能订阅和查看账单信息',
+<<<<<<< HEAD
+>>>>>>> upstream/main
+=======
 >>>>>>> upstream/main
   },
   plans: {

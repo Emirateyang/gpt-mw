@@ -72,6 +72,9 @@ const translation = {
 =======
     ragAPIRequestTooltip: 'Refers to the number of API calls invoking only the knowledge base processing capabilities of Dify.',
     receiptInfo: 'Only team owner and team admin can subscribe and view billing information',
+<<<<<<< HEAD
+>>>>>>> upstream/main
+=======
 >>>>>>> upstream/main
   },
   plans: {

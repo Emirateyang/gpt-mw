@@ -3,6 +3,7 @@ import { useContext } from 'use-context-selector'
 import I18n from '@/context/i18n'
 import { X } from '@/app/components/base/icons/src/vender/line/general'
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 const NOTICE_I18N = {
   title: {
@@ -14,6 +15,9 @@ const NOTICE_I18N = {
     'zh-Hans': '为了有效提升数据检索能力及稳定性，Dify 将于 2023 年 8 月 29 日 03:00 至 08:00 期间进行服务升级，届时 AI 云端版及应用将无法访问。感谢您的耐心与支持。',
   },
 }
+=======
+import { NOTICE_I18N, getModelRuntimeSupported } from '@/utils/language'
+>>>>>>> upstream/main
 =======
 import { NOTICE_I18N, getModelRuntimeSupported } from '@/utils/language'
 >>>>>>> upstream/main
