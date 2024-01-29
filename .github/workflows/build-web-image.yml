@@ -44,7 +44,7 @@ jobs:
           build-args: |
             COMMIT_SHA=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
           push: true
-          tags: krinsiman/ai-web:0.5.0
+          tags: krinsiman/ai-web:0.5.2
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
