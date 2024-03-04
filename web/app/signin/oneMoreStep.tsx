@@ -164,7 +164,7 @@ const OneMoreStep = () => {
         {/*      href={'https://docs.dify.ai/user-agreement/open-source'}*/}
         {/*    >{t('login.license.link')}</Link>*/}
         {/*  </div>*/}
-        {/*</div>*/}
+        </div>
       </div>
     </>
   )
