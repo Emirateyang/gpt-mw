@@ -153,12 +153,12 @@ const NewAppDialog = ({ show, onSuccess, onClose }: NewAppDialogProps) => {
                     <div className={style.listItemHeading}>
                       <div className={style.listItemHeadingContent}>{t('app.newApp.chatApp')}</div>
                     </div>
-                    <div className='shrink-0 flex items-center h-[18px] border border-indigo-300 px-1 rounded-[5px] text-xs font-medium text-indigo-600 uppercase'>{t('app.newApp.agentAssistant')}</div>
+                    <div className='flex items-center h-[18px] border border-indigo-300 px-1 rounded-[5px] text-xs font-medium text-indigo-600 uppercase  truncate'>{t('app.newApp.agentAssistant')}</div>
                   </div>
-                  <div className={style.listItemDescription}>{t('app.newApp.chatAppIntro')}</div>
-                  {/*<div className={classNames(style.listItemFooter, 'justify-end')}>*/}
-                  {/*  <a className={style.listItemLink} href='https://udify.app/chat/7CQBa5yyvYLSkZtx' target='_blank'>{t('app.newApp.previewDemo')}<span className={classNames(style.linkIcon, style.grayLinkIcon)} /></a>*/}
-                  {/*</div>*/}
+                  <div className={`${style.listItemDescription} ${style.noClip}`}>{t('app.newApp.chatAppIntro')}</div>
+                  {/* <div className={classNames(style.listItemFooter, 'justify-end')}>
+                    <a className={style.listItemLink} href='https://udify.app/chat/7CQBa5yyvYLSkZtx' target='_blank' rel='noopener noreferrer'>{t('app.newApp.previewDemo')}<span className={classNames(style.linkIcon, style.grayLinkIcon)} /></a>
+                  </div> */}
                 </li>
                 <li
                   className={classNames(style.listItem, style.selectable, newAppMode === 'completion' && style.selected)}
@@ -173,10 +173,7 @@ const NewAppDialog = ({ show, onSuccess, onClose }: NewAppDialogProps) => {
                       <div className={style.listItemHeadingContent}>{t('app.newApp.completeApp')}</div>
                     </div>
                   </div>
-                  <div className={style.listItemDescription}>{t('app.newApp.completeAppIntro')}</div>
-                  {/*<div className={classNames(style.listItemFooter, 'justify-end')}>*/}
-                  {/*  <a className={style.listItemLink} href='https://udify.app/completion/aeFTj0VCb3Ok3TUE' target='_blank'>{t('app.newApp.previewDemo')}<span className={classNames(style.linkIcon, style.grayLinkIcon)} /></a>*/}
-                  {/*</div>*/}
+                  <div className={`${style.listItemDescription} ${style.noClip}`}>{t('app.newApp.completeAppIntro')}</div>
                 </li>
               </ul>
 

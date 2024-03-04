@@ -16,6 +16,7 @@ import EditCustomToolModal from './edit-custom-collection-modal'
 import NoCustomTool from './info/no-custom-tool'
 import NoSearchRes from './info/no-search-res'
 import NoCustomToolPlaceholder from './no-custom-tool-placeholder'
+import { useTabSearchParams } from '@/hooks/use-tab-searchparams'
 import TabSlider from '@/app/components/base/tab-slider'
 import { createCustomCollection, fetchCollectionList as doFetchCollectionList, fetchBuiltInToolList, fetchCustomToolList } from '@/service/tools'
 import type { AgentTool } from '@/types/app'
@@ -43,7 +44,7 @@ const Tools: FC<Props> = ({
   const [isDetailLoading, setIsDetailLoading] = useState(false)
 
   const fetchCollectionList = async () => {
-    const list = await doFetchCollectionList() as Collection[]
+    const list = await doFetchCollectionList()
     setCollectionList(list)
     if (list.length > 0 && currCollectionIndex === null) {
       let index = 0
@@ -68,7 +69,22 @@ const Tools: FC<Props> = ({
   })()
 
   const [query, setQuery] = useState('')
-  const [collectionType, setCollectionType] = useState<CollectionType>(collectionTypeOptions[0].value)
+  const [toolPageCollectionType, setToolPageCollectionType] = useTabSearchParams({
+    defaultTab: collectionTypeOptions[0].value,
+  })
+  const [appPageCollectionType, setAppPageCollectionType] = useState(collectionTypeOptions[0].value)
+  const { collectionType, setCollectionType } = (() => {
+    if (isInToolsPage) {
+      return {
+        collectionType: toolPageCollectionType,
+        setCollectionType: setToolPageCollectionType,
+      }
+    }
+    return {
+      collectionType: appPageCollectionType,
+      setCollectionType: setAppPageCollectionType,
+    }
+  })()
 
   const showCollectionList = (() => {
     let typeFilteredList: Collection[] = []
@@ -103,11 +119,11 @@ const Tools: FC<Props> = ({
       setIsDetailLoading(true)
       try {
         if (currCollection.type === CollectionType.builtIn) {
-          const list = await fetchBuiltInToolList(currCollection.name) as Tool[]
+          const list = await fetchBuiltInToolList(currCollection.name)
           setCurrentTools(list)
         }
         else {
-          const list = await fetchCustomToolList(currCollection.name) as Tool[]
+          const list = await fetchCustomToolList(currCollection.name)
           setCurrentTools(list)
         }
       }
