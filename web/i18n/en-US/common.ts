@@ -390,7 +390,7 @@ const translation = {
     type: 'Type',
   },
   about: {
-    changeLog: 'Changlog',
+    changeLog: 'Changelog',
     updateNow: 'Update now',
     nowAvailable: 'AI {{version}} is now available.',
     latestAvailable: 'AI {{version}} is the latest version available.',
