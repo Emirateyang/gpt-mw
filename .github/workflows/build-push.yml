@@ -11,8 +11,8 @@ on:
 env:
   DOCKERHUB_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-  DIFY_WEB_IMAGE_NAME: ${{ vars.DIFY_WEB_IMAGE_NAME || 'langgenius/dify-web' }}
-  DIFY_API_IMAGE_NAME: ${{ vars.DIFY_API_IMAGE_NAME || 'langgenius/dify-api' }}
+  DIFY_WEB_IMAGE_NAME: ${{ vars.DIFY_WEB_IMAGE_NAME || 'krinsiman/ai-web' }}
+  DIFY_API_IMAGE_NAME: ${{ vars.DIFY_API_IMAGE_NAME || 'krinsiman/dify-api' }}
 
 jobs:
   build-and-push:
@@ -58,7 +58,7 @@ jobs:
           platforms: ${{ startsWith(github.ref, 'refs/tags/') && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           build-args: COMMIT_SHA=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
           push: true
-          tags: krinsiman/ai-web:0.6.3
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
