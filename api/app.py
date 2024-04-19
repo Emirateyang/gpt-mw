@@ -1,7 +1,5 @@
 import os
 
-from werkzeug.exceptions import Unauthorized
-
 if not os.environ.get("DEBUG") or os.environ.get("DEBUG").lower() != 'true':
     from gevent import monkey
 
@@ -11,10 +9,6 @@ if not os.environ.get("DEBUG") or os.environ.get("DEBUG").lower() != 'true':
 
     grpc.experimental.gevent.init_gevent()
 
-    import langchain
-
-    langchain.verbose = True
-
 import json
 import logging
 import threading
@@ -23,9 +17,13 @@ import warnings
 
 from flask import Flask, Response, request
 from flask_cors import CORS
+from werkzeug.exceptions import Unauthorized
 
 from commands import register_commands
 from config import CloudEditionConfig, Config
+
+# DO NOT REMOVE BELOW
+from events import event_handlers
 from extensions import (
     ext_celery,
     ext_code_based_extension,
@@ -42,11 +40,8 @@ from extensions import (
 from extensions.ext_database import db
 from extensions.ext_login import login_manager
 from libs.passport import PassportService
-from services.account_service import AccountService
-
-# DO NOT REMOVE BELOW
-from events import event_handlers
 from models import account, dataset, model, source, task, tool, tools, web
+from services.account_service import AccountService
 
 # DO NOT REMOVE ABOVE
 
@@ -120,7 +115,7 @@ def initialize_extensions(app):
 @login_manager.request_loader
 def load_user_from_request(request_from_flask_login):
     """Load user based on the request."""
-    if request.blueprint == 'console':
+    if request.blueprint in ['console', 'inner_api']:
         # Check if the user_id contains a dot, indicating the old format
         auth_header = request.headers.get('Authorization', '')
         if not auth_header:
@@ -156,6 +151,7 @@ def unauthorized_handler():
 def register_blueprints(app):
     from controllers.console import bp as console_app_bp
     from controllers.files import bp as files_bp
+    from controllers.inner_api import bp as inner_api_bp
     from controllers.service_api import bp as service_api_bp
     from controllers.web import bp as web_bp
 
@@ -192,6 +188,8 @@ def register_blueprints(app):
          methods=['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS', 'PATCH']
          )
     app.register_blueprint(files_bp)
+
+    app.register_blueprint(inner_api_bp)
 
 
 # create app
