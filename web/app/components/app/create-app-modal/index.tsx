@@ -161,30 +161,30 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
               <div className='h-5 text-[13px] font-medium leading-[18px]'>{t('app.types.agent')}</div>
             </div>
           </TooltipPlus>
-          <TooltipPlus
-            hideArrow
-            popupContent={
-              <div className='flex flex-col max-w-[320px] leading-[18px] text-xs'>
-                <div className='text-gray-700'>{t('app.newApp.workflowDescription')}</div>
-              </div>
-            }
-          >
-            <div
-              className={cn(
-                'relative grow box-border w-[158px] px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',
-                s['grid-bg-workflow'],
-                appMode === 'workflow' && 'border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',
-              )}
-              onClick={() => {
-                setAppMode('workflow')
-                setShowChatBotType(false)
-              }}
-            >
-              <Route className='w-6 h-6 text-[#f79009]' />
-              <div className='h-5 text-[13px] font-medium leading-[18px]'>{t('app.types.workflow')}</div>
-              <span className='absolute top-[-3px] right-[-3px] px-1 rounded-[5px] bg-white border border-black/8 text-gray-500 text-[10px] leading-[18px] font-medium'>BETA</span>
-            </div>
-          </TooltipPlus>
+          {/*<TooltipPlus*/}
+          {/*  hideArrow*/}
+          {/*  popupContent={*/}
+          {/*    <div className='flex flex-col max-w-[320px] leading-[18px] text-xs'>*/}
+          {/*      <div className='text-gray-700'>{t('app.newApp.workflowDescription')}</div>*/}
+          {/*    </div>*/}
+          {/*  }*/}
+          {/*>*/}
+          {/*  <div*/}
+          {/*    className={cn(*/}
+          {/*      'relative grow box-border w-[158px] px-0.5 pt-3 pb-2 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-100 text-gray-700 cursor-pointer bg-white shadow-xs hover:border-gray-300',*/}
+          {/*      s['grid-bg-workflow'],*/}
+          {/*      appMode === 'workflow' && 'border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',*/}
+          {/*    )}*/}
+          {/*    onClick={() => {*/}
+          {/*      setAppMode('workflow')*/}
+          {/*      setShowChatBotType(false)*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    <Route className='w-6 h-6 text-[#f79009]' />*/}
+          {/*    <div className='h-5 text-[13px] font-medium leading-[18px]'>{t('app.types.workflow')}</div>*/}
+          {/*    <span className='absolute top-[-3px] right-[-3px] px-1 rounded-[5px] bg-white border border-black/8 text-gray-500 text-[10px] leading-[18px] font-medium'>BETA</span>*/}
+          {/*  </div>*/}
+          {/*</TooltipPlus>*/}
         </div>
       </div>
       {showChatBotType && (
@@ -222,43 +222,43 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
               </div>
               <div className='mt-[2px] text-gray-500 text-xs leading-[18px]'>{t('app.newApp.basicTip')}</div>
             </div>
-            <div
-              className={cn(
-                'relative grow flex-[50%] pl-3 py-2 pr-2 rounded-lg border border-gray-100 bg-gray-25 text-gray-700 cursor-pointer hover:bg-white hover:shadow-xs hover:border-gray-300',
-                appMode === 'advanced-chat' && 'bg-white shadow-xs border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',
-              )}
-              onClick={() => {
-                setAppMode('advanced-chat')
-              }}
-            >
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center'>
-                  <div className='mr-1 h-5 text-sm font-medium leading-5'>{t('app.newApp.advanced')}</div>
-                  <span className='px-1 rounded-[5px] bg-white border border-black/8 text-gray-500 text-[10px] leading-[18px] font-medium'>BETA</span>
-                </div>
-                <div className='group'>
-                  <HelpCircle className='w-[14px] h-[14px] text-gray-400 hover:text-gray-500' />
-                  <div
-                    className={cn(
-                      'hidden z-20 absolute right-[26px] top-[-158px] w-[376px] rounded-xl bg-white border-[0.5px] border-[rgba(0,0,0,0.05)] shadow-lg group-hover:block',
-                    )}
-                  >
-                    <div className={cn('w-full h-[256px] bg-center bg-no-repeat bg-contain rounded-xl', s.advancedPic)}/>
-                    <div className='px-4 pb-2'>
-                      <div className='flex items-center justify-between'>
-                        <div className='flex items-center'>
-                          <div className='mr-1 text-gray-700 text-md leading-6 font-semibold'>{t('app.newApp.advanced')}</div>
-                          <span className='px-1 rounded-[5px] bg-white border border-black/8 text-gray-500 text-[10px] leading-[18px] font-medium'>BETA</span>
-                        </div>
-                        <div className='text-orange-500 text-xs leading-[18px] font-medium'>{t('app.newApp.advancedFor').toLocaleUpperCase()}</div>
-                      </div>
-                      <div className='mt-1 text-gray-500 text-sm leading-5'>{t('app.newApp.advancedDescription')}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='mt-[2px] text-gray-500 text-xs leading-[18px]'>{t('app.newApp.advancedFor')}</div>
-            </div>
+            {/*<div*/}
+            {/*  className={cn(*/}
+            {/*    'relative grow flex-[50%] pl-3 py-2 pr-2 rounded-lg border border-gray-100 bg-gray-25 text-gray-700 cursor-pointer hover:bg-white hover:shadow-xs hover:border-gray-300',*/}
+            {/*    appMode === 'advanced-chat' && 'bg-white shadow-xs border-[1.5px] border-primary-400 hover:border-[1.5px] hover:border-primary-400',*/}
+            {/*  )}*/}
+            {/*  onClick={() => {*/}
+            {/*    setAppMode('advanced-chat')*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  <div className='flex items-center justify-between'>*/}
+            {/*    <div className='flex items-center'>*/}
+            {/*      <div className='mr-1 h-5 text-sm font-medium leading-5'>{t('app.newApp.advanced')}</div>*/}
+            {/*      <span className='px-1 rounded-[5px] bg-white border border-black/8 text-gray-500 text-[10px] leading-[18px] font-medium'>BETA</span>*/}
+            {/*    </div>*/}
+            {/*    <div className='group'>*/}
+            {/*      <HelpCircle className='w-[14px] h-[14px] text-gray-400 hover:text-gray-500' />*/}
+            {/*      <div*/}
+            {/*        className={cn(*/}
+            {/*          'hidden z-20 absolute right-[26px] top-[-158px] w-[376px] rounded-xl bg-white border-[0.5px] border-[rgba(0,0,0,0.05)] shadow-lg group-hover:block',*/}
+            {/*        )}*/}
+            {/*      >*/}
+            {/*        <div className={cn('w-full h-[256px] bg-center bg-no-repeat bg-contain rounded-xl', s.advancedPic)}/>*/}
+            {/*        <div className='px-4 pb-2'>*/}
+            {/*          <div className='flex items-center justify-between'>*/}
+            {/*            <div className='flex items-center'>*/}
+            {/*              <div className='mr-1 text-gray-700 text-md leading-6 font-semibold'>{t('app.newApp.advanced')}</div>*/}
+            {/*              <span className='px-1 rounded-[5px] bg-white border border-black/8 text-gray-500 text-[10px] leading-[18px] font-medium'>BETA</span>*/}
+            {/*            </div>*/}
+            {/*            <div className='text-orange-500 text-xs leading-[18px] font-medium'>{t('app.newApp.advancedFor').toLocaleUpperCase()}</div>*/}
+            {/*          </div>*/}
+            {/*          <div className='mt-1 text-gray-500 text-sm leading-5'>{t('app.newApp.advancedDescription')}</div>*/}
+            {/*        </div>*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*  <div className='mt-[2px] text-gray-500 text-xs leading-[18px]'>{t('app.newApp.advancedFor')}</div>*/}
+            {/*</div>*/}
           </div>
         </div>
       )}
