@@ -10,6 +10,7 @@ from flask import current_app
 
 from core.agent.entities import AgentToolEntity
 from core.app.entities.app_invoke_entities import InvokeFrom
+from core.helper.module_import_helper import load_single_subclass_from_source
 from core.model_runtime.utils.encoders import jsonable_encoder
 from core.tools.entities.api_entities import UserToolProvider, UserToolProviderTypeLiteral
 from core.tools.entities.common_entities import I18nObject
@@ -31,7 +32,6 @@ from core.tools.utils.configuration import (
     ToolParameterConfigurationManager,
 )
 from core.tools.utils.tool_parameter_converter import ToolParameterConverter
-from core.utils.module_import_helper import load_single_subclass_from_source
 from core.workflow.nodes.tool.entities import ToolEntity
 from extensions.ext_database import db
 from models.tools import ApiToolProvider, BuiltinToolProvider, WorkflowToolProvider
@@ -210,7 +210,7 @@ class ToolManager:
         if parameter_rule.type == ToolParameter.ToolParameterType.SELECT:
             # check if tool_parameter_config in options
             options = list(map(lambda x: x.value, parameter_rule.options))
-            if parameter_value not in options:
+            if parameter_value is not None and parameter_value not in options:
                 raise ValueError(
                     f"tool parameter {parameter_rule.name} value {parameter_value} not in options {options}")
 
