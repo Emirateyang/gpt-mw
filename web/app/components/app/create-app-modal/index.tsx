@@ -181,7 +181,7 @@ const CreateAppModal = ({ show, onSuccess, onClose }: CreateAppDialogProps) => {
             >
               <Route className='w-6 h-6 text-[#f79009]' />
               <div className='h-5 text-[13px] font-medium leading-[18px]'>{t('app.types.workflow')}</div>
-              <span className='absolute top-[-3px] right-[-3px] px-1 rounded-[5px] bg-white border border-black/8 text-gray-500 text-[10px] leading-[18px] font-medium'>BETA</span>
+
             </div>
           </TooltipPlus>
         </div>
