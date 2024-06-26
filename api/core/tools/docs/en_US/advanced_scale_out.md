@@ -1,6 +1,6 @@
 # Advanced Tool Integration
 
-Before starting with this advanced guide, please make sure you have a basic understanding of the tool integration process in Dify. Check out [Quick Integration](./tool_scale_out.md) for a quick runthrough.
+Before starting with this advanced guide, please make sure you have a basic understanding of the tool integration process in AI. Check out [Quick Integration](./tool_scale_out.md) for a quick runthrough.
 
 ## Tool Interface
 
@@ -8,12 +8,12 @@ We have defined a series of helper methods in the `Tool` class to help developer
 
 ### Message Return
 
-Dify supports various message types such as `text`, `link`, `image`, and `file BLOB`. You can return different types of messages to the LLM and users through the following interfaces.
+AI supports various message types such as `text`, `link`, `image`, and `file BLOB`. You can return different types of messages to the LLM and users through the following interfaces.
 
 Please note, some parameters in the following interfaces will be introduced in later sections.
 
 #### Image URL
-You only need to pass the URL of the image, and Dify will automatically download the image and return it to the user.
+You only need to pass the URL of the image, and AI will automatically download the image and return it to the user.
 
 ```python
     def create_image_message(self, image: str, save_as: str = '') -> ToolInvokeMessage:
@@ -55,7 +55,7 @@ If you need to return a text message, you can use the following interface.
 If you need to return the raw data of a file, such as images, audio, video, PPT, Word, Excel, etc., you can use the following interface.
 
 - `blob` The raw data of the file, of bytes type
-- `meta` The metadata of the file, if you know the type of the file, it is best to pass a `mime_type`, otherwise Dify will use `octet/stream` as the default type
+- `meta` The metadata of the file, if you know the type of the file, it is best to pass a `mime_type`, otherwise AI will use `octet/stream` as the default type
 
 ```python
     def create_blob_message(self, blob: bytes, meta: dict = None, save_as: str = '') -> ToolInvokeMessage:
