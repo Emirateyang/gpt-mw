@@ -50,14 +50,14 @@ const getIcon = (type: BlockEnum, className: string) => {
 }
 const ICON_CONTAINER_BG_COLOR_MAP: Record<string, string> = {
   [BlockEnum.Start]: 'bg-primary-500',
-  [BlockEnum.LLM]: 'bg-[#6172F3]',
+  [BlockEnum.LLM]: 'bg-[#FF8C00]',
   [BlockEnum.Code]: 'bg-[#2E90FA]',
-  [BlockEnum.End]: 'bg-[#F79009]',
+  [BlockEnum.End]: 'bg-[#FF3333 ]',
   [BlockEnum.IfElse]: 'bg-[#06AED4]',
   [BlockEnum.Iteration]: 'bg-[#06AED4]',
   [BlockEnum.HttpRequest]: 'bg-[#875BF7]',
   [BlockEnum.Answer]: 'bg-[#F79009]',
-  [BlockEnum.KnowledgeRetrieval]: 'bg-[#16B364]',
+  [BlockEnum.KnowledgeRetrieval]: 'bg-[#F79009]',
   [BlockEnum.QuestionClassifier]: 'bg-[#16B364]',
   [BlockEnum.TemplateTransform]: 'bg-[#2E90FA]',
   [BlockEnum.VariableAssigner]: 'bg-[#2E90FA]',
