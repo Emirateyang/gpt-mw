@@ -52,7 +52,7 @@ const ICON_CONTAINER_BG_COLOR_MAP: Record<string, string> = {
   [BlockEnum.Start]: 'bg-primary-500',
   [BlockEnum.LLM]: 'bg-[#FF8C00]',
   [BlockEnum.Code]: 'bg-[#2E90FA]',
-  [BlockEnum.End]: 'bg-[#FF3333 ]',
+  [BlockEnum.End]: 'bg-[#FF3333]',
   [BlockEnum.IfElse]: 'bg-[#06AED4]',
   [BlockEnum.Iteration]: 'bg-[#06AED4]',
   [BlockEnum.HttpRequest]: 'bg-[#875BF7]',
