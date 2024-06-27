@@ -134,7 +134,7 @@ const BasePanel: FC<BasePanelProps> = ({
                   </TooltipPlus>
                 )
               }
-              <HelpLink nodeType={data.type} />
+              {/*<HelpLink nodeType={data.type} />*/}
               <PanelOperator id={id} data={data} showHelpLink={false} />
               <div className='mx-3 w-[1px] h-3.5 bg-gray-200' />
               <div
