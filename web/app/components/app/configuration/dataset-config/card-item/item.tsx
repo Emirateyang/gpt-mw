@@ -5,6 +5,7 @@ import {
   RiDeleteBinLine,
   RiEditLine,
 } from '@remixicon/react'
+import { useTranslation } from 'react-i18next'
 import SettingsModal from '../settings-modal'
 import type { DataSet } from '@/models/datasets'
 import { DataSourceType } from '@/models/datasets'
@@ -22,17 +23,20 @@ type ItemProps = {
   onRemove: (id: string) => void
   readonly?: boolean
   onSave: (newDataset: DataSet) => void
+  editable?: boolean
 }
 
 const Item: FC<ItemProps> = ({
   config,
   onSave,
   onRemove,
+  editable = true,
 }) => {
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const { formatIndexingTechniqueAndMethod } = useKnowledge()
+  const { t } = useTranslation()
 
   const handleSave = (newDataset: DataSet) => {
     onSave(newDataset)
@@ -65,18 +69,22 @@ const Item: FC<ItemProps> = ({
       <div className='grow'>
         <div className='flex items-center h-[18px]'>
           <div className='grow text-[13px] font-medium text-gray-800 truncate' title={config.name}>{config.name}</div>
-          <Badge
-            text={formatIndexingTechniqueAndMethod(config.indexing_technique, config.retrieval_model_dict?.search_method)}
-          />
+          {config.provider === 'external'
+            ? <Badge text={t('dataset.externalTag') as string} />
+            : <Badge
+              text={formatIndexingTechniqueAndMethod(config.indexing_technique, config.retrieval_model_dict?.search_method)}
+            />}
         </div>
       </div>
       <div className='hidden rounded-lg group-hover:flex items-center justify-end absolute right-0 top-0 bottom-0 pr-2 w-[124px] bg-gradient-to-r from-white/50 to-white to-50%'>
-        <div
-          className='flex items-center justify-center mr-1 w-6 h-6 hover:bg-black/5 rounded-md cursor-pointer'
-          onClick={() => setShowSettingsModal(true)}
-        >
-          <RiEditLine className='w-4 h-4 text-gray-500' />
-        </div>
+        {
+          editable && <div
+            className='flex items-center justify-center mr-1 w-6 h-6 hover:bg-black/5 rounded-md cursor-pointer'
+            onClick={() => setShowSettingsModal(true)}
+          >
+            <RiEditLine className='w-4 h-4 text-gray-500' />
+          </div>
+        }
         <div
           className='group/action flex items-center justify-center w-6 h-6 hover:bg-[#FEE4E2] rounded-md cursor-pointer'
           onClick={() => onRemove(config.id)}

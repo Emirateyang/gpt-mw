@@ -8,9 +8,9 @@ import RemarkGfm from 'remark-gfm'
 import RehypeRaw from 'rehype-raw'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { atelierHeathLight } from 'react-syntax-highlighter/dist/esm/styles/hljs'
-import type { RefObject } from 'react'
-import { Component, memo, useEffect, useMemo, useRef, useState } from 'react'
+import { Component, memo, useMemo, useRef, useState } from 'react'
 import type { CodeComponent } from 'react-markdown/lib/ast-to-react'
+import { flow } from 'lodash/fp'
 import cn from '@/utils/classnames'
 import CopyBtn from '@/app/components/base/copy-btn'
 import SVGBtn from '@/app/components/base/svg'
@@ -20,6 +20,9 @@ import { useChatContext } from '@/app/components/base/chat/chat/context'
 import VideoGallery from '@/app/components/base/video-gallery'
 import AudioGallery from '@/app/components/base/audio-gallery'
 import SVGRenderer from '@/app/components/base/svg-gallery'
+import MarkdownButton from '@/app/components/base/markdown-blocks/button'
+import MarkdownForm from '@/app/components/base/markdown-blocks/form'
+import ThinkBlock from '@/app/components/base/markdown-blocks/think-block'
 
 // Available language https://github.com/react-syntax-highlighter/react-syntax-highlighter/blob/master/AVAILABLE_LANGUAGES_HLJS.MD
 const capitalizationLanguageNameMap: Record<string, string> = {
@@ -57,9 +60,22 @@ const getCorrectCapitalizationLanguageName = (language: string) => {
 const preprocessLaTeX = (content: string) => {
   if (typeof content !== 'string')
     return content
-  return content.replace(/\\\[(.*?)\\\]/g, (_, equation) => `$$${equation}$$`)
-    .replace(/\\\((.*?)\\\)/g, (_, equation) => `$$${equation}$$`)
-    .replace(/(^|[^\\])\$(.+?)\$/g, (_, prefix, equation) => `${prefix}$${equation}$`)
+
+  return flow([
+    (str: string) => str.replace(/\\\[(.*?)\\\]/g, (_, equation) => `$$${equation}$$`),
+    (str: string) => str.replace(/\\\((.*?)\\\)/g, (_, equation) => `$$${equation}$$`),
+    (str: string) => str.replace(/(^|[^\\])\$(.+?)\$/g, (_, prefix, equation) => `${prefix}$${equation}$`),
+  ])(content)
+}
+
+const preprocessThinkTag = (content: string) => {
+  if (!content.trim().startsWith('<think>\n'))
+    return content
+
+  return flow([
+    (str: string) => str.replace('<think>\n', '<details>\n'),
+    (str: string) => str.replace('\n</think>', '\n[ENDTHINKFLAG]</details>'),
+  ])(content)
 }
 
 export function PreCode(props: { children: any }) {
@@ -73,29 +89,6 @@ export function PreCode(props: { children: any }) {
       {props.children}
     </pre>
   )
-}
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-const useLazyLoad = (ref: RefObject<Element>): boolean => {
-  const [isIntersecting, setIntersecting] = useState<boolean>(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIntersecting(true)
-        observer.disconnect()
-      }
-    })
-
-    if (ref.current)
-      observer.observe(ref.current)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [ref])
-
-  return isIntersecting
 }
 
 // **Add code block
@@ -116,59 +109,80 @@ const CodeBlock: CodeComponent = memo(({ inline, className, children, ...props }
   const match = /language-(\w+)/.exec(className || '')
   const language = match?.[1]
   const languageShowName = getCorrectCapitalizationLanguageName(language || '')
-  let chartData = JSON.parse(String('{"title":{"text":"ECharts error - Wrong JSON format."}}').replace(/\n$/, ''))
-  if (language === 'echarts') {
-    try {
-      chartData = JSON.parse(String(children).replace(/\n$/, ''))
+  const chartData = useMemo(() => {
+    if (language === 'echarts') {
+      try {
+        return JSON.parse(String(children).replace(/\n$/, ''))
+      }
+      catch (error) { }
     }
-    catch (error) {
-    }
-  }
+    return JSON.parse('{"title":{"text":"ECharts error - Wrong JSON format."}}')
+  }, [language, children])
 
-  // Use `useMemo` to ensure that `SyntaxHighlighter` only re-renders when necessary
-  return useMemo(() => {
-    return (!inline && match)
-      ? (
-        <div>
-          <div
-            className='flex justify-between h-8 items-center p-1 pl-3 border-b'
-            style={{
-              borderColor: 'rgba(0, 0, 0, 0.05)',
-            }}
-          >
-            <div className='text-[13px] text-gray-500 font-normal'>{languageShowName}</div>
-            <div style={{ display: 'flex' }}>
-              {language === 'mermaid' && <SVGBtn isSVG={isSVG} setIsSVG={setIsSVG}/>}
-              <CopyBtn
-                className='mr-1'
-                value={String(children).replace(/\n$/, '')}
-                isPlain
-              />
-            </div>
-          </div>
-          {(language === 'mermaid' && isSVG)
-            ? (<Flowchart PrimitiveCode={String(children).replace(/\n$/, '')} />)
-            : (language === 'echarts'
-              ? (<div style={{ minHeight: '350px', minWidth: '700px' }}><ErrorBoundary><ReactEcharts option={chartData} /></ErrorBoundary></div>)
-              : (language === 'svg'
-                ? (<ErrorBoundary><SVGRenderer content={String(children).replace(/\n$/, '')} /></ErrorBoundary>)
-                : (<SyntaxHighlighter
-                  {...props}
-                  style={atelierHeathLight}
-                  customStyle={{
-                    paddingLeft: 12,
-                    backgroundColor: '#fff',
-                  }}
-                  language={match[1]}
-                  showLineNumbers
-                  PreTag="div"
-                >
-                  {String(children).replace(/\n$/, '')}
-                </SyntaxHighlighter>)))}
+  const renderCodeContent = useMemo(() => {
+    const content = String(children).replace(/\n$/, '')
+    if (language === 'mermaid' && isSVG) {
+      return <Flowchart PrimitiveCode={content} />
+    }
+    else if (language === 'echarts') {
+      return (
+        <div style={{ minHeight: '350px', minWidth: '100%', overflowX: 'scroll' }}>
+          <ErrorBoundary>
+            <ReactEcharts option={chartData} style={{ minWidth: '700px' }} />
+          </ErrorBoundary>
         </div>
       )
-      : (<code {...props} className={className}>{children}</code>)
-  }, [chartData, children, className, inline, isSVG, language, languageShowName, match, props])
+    }
+    else if (language === 'svg' && isSVG) {
+      return (
+        <ErrorBoundary>
+          <SVGRenderer content={content} />
+        </ErrorBoundary>
+      )
+    }
+    else {
+      return (
+        <SyntaxHighlighter
+          {...props}
+          style={atelierHeathLight}
+          customStyle={{
+            paddingLeft: 12,
+            backgroundColor: '#fff',
+          }}
+          language={match?.[1]}
+          showLineNumbers
+          PreTag="div"
+        >
+          {content}
+        </SyntaxHighlighter>
+      )
+    }
+  }, [language, match, props, children, chartData, isSVG])
+
+  if (inline || !match)
+    return <code {...props} className={className}>{children}</code>
+
+  return (
+    <div>
+      <div
+        className='flex justify-between h-8 items-center p-1 pl-3 border-b'
+        style={{
+          borderColor: 'rgba(0, 0, 0, 0.05)',
+        }}
+      >
+        <div className='text-[13px] text-gray-500 font-normal'>{languageShowName}</div>
+        <div style={{ display: 'flex' }}>
+          {(['mermaid', 'svg']).includes(language!) && <SVGBtn isSVG={isSVG} setIsSVG={setIsSVG} />}
+          <CopyBtn
+            className='mr-1'
+            value={String(children).replace(/\n$/, '')}
+            isPlain
+          />
+        </div>
+      </div>
+      {renderCodeContent}
+    </div>
+  )
 })
 CodeBlock.displayName = 'CodeBlock'
 
@@ -187,6 +201,12 @@ const AudioBlock: CodeComponent = memo(({ node }) => {
   return <AudioGallery key={srcs.join()} srcs={srcs} />
 })
 AudioBlock.displayName = 'AudioBlock'
+
+const ScriptBlock = memo(({ node }: any) => {
+  const scriptContent = node.children[0]?.value || ''
+  return `<script>${scriptContent}</script>`
+})
+ScriptBlock.displayName = 'ScriptBlock'
 
 const Paragraph = (paragraph: any) => {
   const { node }: any = paragraph
@@ -220,11 +240,18 @@ const Link = ({ node, ...props }: any) => {
 }
 
 export function Markdown(props: { content: string; className?: string }) {
-  const latexContent = preprocessLaTeX(props.content)
+  const latexContent = flow([
+    preprocessThinkTag,
+    preprocessLaTeX,
+  ])(props.content)
   return (
     <div className={cn(props.className, 'markdown-body')}>
       <ReactMarkdown
-        remarkPlugins={[[RemarkGfm, RemarkMath, { singleDollarTextMath: false }], RemarkBreaks]}
+        remarkPlugins={[
+          RemarkGfm,
+          [RemarkMath, { singleDollarTextMath: false }],
+          RemarkBreaks,
+        ]}
         rehypePlugins={[
           RehypeKatex,
           RehypeRaw as any,
@@ -232,7 +259,7 @@ export function Markdown(props: { content: string; className?: string }) {
           () => {
             return (tree) => {
               const iterate = (node: any) => {
-                if (node.type === 'element' && !node.properties?.src && node.properties?.ref && node.properties.ref.startsWith('{') && node.properties.ref.endsWith('}'))
+                if (node.type === 'element' && node.properties?.ref)
                   delete node.properties.ref
 
                 if (node.children)
@@ -242,7 +269,7 @@ export function Markdown(props: { content: string; className?: string }) {
             }
           },
         ]}
-        disallowedElements={['script', 'iframe', 'head', 'html', 'meta', 'link', 'style', 'body']}
+        disallowedElements={['iframe', 'head', 'html', 'meta', 'link', 'style', 'body']}
         components={{
           code: CodeBlock,
           img: Img,
@@ -250,6 +277,10 @@ export function Markdown(props: { content: string; className?: string }) {
           audio: AudioBlock,
           a: Link,
           p: Paragraph,
+          button: MarkdownButton,
+          form: MarkdownForm,
+          script: ScriptBlock,
+          details: ThinkBlock,
         }}
         linkTarget='_blank'
       >

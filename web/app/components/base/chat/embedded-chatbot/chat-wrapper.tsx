@@ -2,9 +2,12 @@ import { useCallback, useEffect, useMemo } from 'react'
 import Chat from '../chat'
 import type {
   ChatConfig,
+  ChatItem,
+  ChatItemInTree,
   OnSend,
 } from '../types'
 import { useChat } from '../chat/hooks'
+import { getLastAnswer, isValidGeneratedAnswer } from '../utils'
 import { useEmbeddedChatbotContext } from './context'
 import ConfigPanel from './config-panel'
 import { isDify } from './utils'
@@ -40,12 +43,17 @@ const ChatWrapper = () => {
 
     return {
       ...config,
+      file_upload: {
+        ...(config as any).file_upload,
+        fileUploadConfig: (config as any).system_parameters,
+      },
       supportFeedback: true,
       opening_statement: currentConversationId ? currentConversationItem?.introduction : (config as any).opening_statement,
     } as ChatConfig
   }, [appParams, currentConversationItem?.introduction, currentConversationId])
   const {
     chatList,
+    setTargetMessageId,
     handleSend,
     handleStop,
     isResponding,
@@ -54,7 +62,7 @@ const ChatWrapper = () => {
     appConfig,
     {
       inputs: (currentConversationId ? currentConversationItem?.inputs : newConversationInputs) as any,
-      promptVariables: inputsForms,
+      inputsForm: inputsForms,
     },
     appPrevChatList,
     taskId => stopChatMessageResponding('', taskId, isInstalledApp, appId),
@@ -63,17 +71,16 @@ const ChatWrapper = () => {
   useEffect(() => {
     if (currentChatInstanceRef.current)
       currentChatInstanceRef.current.handleStop = handleStop
-  }, [])
+  }, [currentChatInstanceRef, handleStop])
 
-  const doSend: OnSend = useCallback((message, files) => {
+  const doSend: OnSend = useCallback((message, files, isRegenerate = false, parentAnswer: ChatItem | null = null) => {
     const data: any = {
       query: message,
+      files,
       inputs: currentConversationId ? currentConversationItem?.inputs : newConversationInputs,
       conversation_id: currentConversationId,
+      parent_message_id: (isRegenerate ? parentAnswer?.id : getLastAnswer(chatList)?.id) || null,
     }
-
-    if (appConfig?.file_upload?.image.enabled && files?.length)
-      data.files = files
 
     handleSend(
       getUrl('chat-messages', isInstalledApp, appId || ''),
@@ -85,15 +92,22 @@ const ChatWrapper = () => {
       },
     )
   }, [
-    appConfig,
+    chatList,
+    handleNewConversationCompleted,
+    handleSend,
     currentConversationId,
     currentConversationItem,
-    handleSend,
     newConversationInputs,
-    handleNewConversationCompleted,
     isInstalledApp,
     appId,
   ])
+
+  const doRegenerate = useCallback((chatItem: ChatItemInTree) => {
+    const question = chatList.find(item => item.id === chatItem.parentMessageId)!
+    const parentAnswer = chatList.find(item => item.id === question.parentMessageId)
+    doSend(question.content, question.message_files, true, isValidGeneratedAnswer(parentAnswer) ? parentAnswer : null)
+  }, [chatList, doSend])
+
   const chatNode = useMemo(() => {
     if (inputsForms.length) {
       return (
@@ -136,6 +150,9 @@ const ChatWrapper = () => {
       chatFooterClassName='pb-4'
       chatFooterInnerClassName={cn('mx-auto w-full max-w-full tablet:px-4', isMobile && 'px-4')}
       onSend={doSend}
+      inputs={currentConversationId ? currentConversationItem?.inputs as any : newConversationInputs}
+      inputsForm={inputsForms}
+      onRegenerate={doRegenerate}
       onStopResponding={handleStop}
       chatNode={chatNode}
       allToolIcons={appMeta?.tool_icons || {}}
@@ -144,6 +161,7 @@ const ChatWrapper = () => {
       answerIcon={answerIcon}
       hideProcessDetail
       themeBuilder={themeBuilder}
+      switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
     />
   )
 }
