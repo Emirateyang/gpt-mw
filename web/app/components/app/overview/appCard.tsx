@@ -263,7 +263,7 @@ function AppCard({
           {/*    api_base_url={appInfo.api_base_url}*/}
           {/*    mode={appInfo.mode}*/}
           {/*  />*/}
-          {/*</>*/}
+          </>
         )
         : null}
     </div>
